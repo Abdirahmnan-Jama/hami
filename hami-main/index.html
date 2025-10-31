@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hami - Fresh Fruits & Vegetables</title>
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+    <script src="https://unpkg.com/feather-icons"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.globe.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #0a1922;
+            color: #e2e8f0;
+        }
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgba(74, 222, 128, 0.3);
+        }
+         .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        .cart-item-enter {
+            opacity: 0;
+            transform: translateX(-100px);
+        }
+        .cart-item-enter-active {
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 500ms ease-in;
+        }
+         @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .floating {
+            animation: float 6s ease-in-out infinite;
+        }
+        .fade-in {
+            animation: fadeIn 1.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .cart-item-exit {
+            opacity: 1;
+        }
+        .cart-item-exit-active {
+            opacity: 0;
+            transform: translateX(100px);
+            transition: all 500ms ease-in;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #4ade80;
+            border-radius: 4px;
+        }
+        .search-input:focus {
+            box-shadow: 0 0 0 3px rgba(74, 222, 128, 0.3);
+        }
+        /* Mobile menu styles */
+        .mobile-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .mobile-menu.open {
+            max-height: 500px;
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ef4444',
+                        secondary: '#dc2626',
+                        dark: '#0f172a',
+                        darker: '#020617'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#0a1922] text-gray-200">
+    <!-- Navigation -->
+    <nav class="fixed w-full bg-[#0a1922]/90 backdrop-blur-md z-50 border-b border-green-900/30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center">
+                    <span class="text-2xl font-bold text-green-400 tracking-tight">HAMI</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#" class="text-green-400 px-3 py-2 rounded-md text-sm font-medium">Home</a>
+                        <a href="#products" class="text-gray-300 hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium">Products</a>
+                        <a href="#about" class="text-gray-300 hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium">About</a>
+                        <a href="#contact" class="text-gray-300 hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="cart-btn" class="relative p-2 rounded-full hover:bg-green-900/30 transition-colors">
+                        <i data-feather="shopping-cart" class="text-green-400"></i>
+                        <span id="cart-count" class="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                    </button>
+                    <button id="mobile-menu-button" class="md:hidden p-2 rounded-full hover:bg-green-900/30 transition-colors">
+                        <i data-feather="menu" id="menu-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div id="mobile-menu" class="mobile-menu md:hidden bg-[#0a1922]/95 backdrop-blur-md border-t border-green-900/30">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#" class="text-green-400 block px-3 py-2 rounded-md text-base font-medium">Home</a>
+                <a href="#products" class="text-gray-300 hover:text-green-400 block px-3 py-2 rounded-md text-base font-medium">Products</a>
+                <a href="#about" class="text-gray-300 hover:text-green-400 block px-3 py-2 rounded-md text-base font-medium">About</a>
+                <a href="#contact" class="text-gray-300 hover:text-green-400 block px-3 py-2 rounded-md text-base font-medium">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+     <div id="hero" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div id="vanta-bg" class="absolute inset-0"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0a1922]/80 via-[#0a1922]/50 to-[#0a1922]"></div>
+        
+        <div class="container mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between">
+            <div class="w-full md:w-1/2 px-4" data-aos="fade-right" data-aos-duration="1000">
+                <h1 class="text-4xl md:text-6xl font-bold tracking-tight text-green-400 mb-6 leading-tight">
+                    HAMI <span class="text-white">Fruits</span> & <br><span class="text-white">Vegetables</span>
+                </h1>
+                <p class="text-lg md:text-xl text-gray-300 mb-8 max-w-lg">
+                   Hami minimarket, farm fresh fruits
+                </p>
+                <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#products" class="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 shadow-lg shadow-green-500/20 text-center">
+                        Shop Now
+                    </a>
+                    <a href="#about" class="border border-green-500 text-green-400 hover:bg-green-900/30 font-medium py-3 px-6 rounded-full transition-all duration-300 transform hover:scale-105 text-center">
+                        Learn More
+                    </a>
+                </div>
+            </div>
+
+            <div class="w-full md:w-1/2 px-4 mt-10 md:mt-0" data-aos="fade-left" data-aos-duration="1000">
+                <div class="relative max-w-md mx-auto">
+                    <div class="absolute -inset-4 bg-green-500 rounded-3xl opacity-20 blur"></div>
+                    <div class="relative rounded-2xl overflow-hidden">
+                        <img src="LOGO.png" alt="Fresh Fruits" class="w-full h-auto object-cover floating">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                            <p class="text-white font-medium">100% Organic & Locally Sourced</p>
+                        </div>
+                    </div>
+                    <div class="absolute -right-6 -bottom-6 bg-green-500/20 rounded-full w-32 h-32 -z-10"></div>
+                    <div class="absolute -left-6 -top-6 bg-green-500/10 rounded-full w-24 h-24 -z-10"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <a href="#products" class="text-green-400">
+                <i data-feather="chevron-down" class="w-8 h-8"></i>
+            </a>
+        </div>
+    </div>
+
+    <!-- Featured Categories -->
+    <section class="py-16 bg-gradient-to-b from-black to-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl font-bold text-center mb-12 gradient-text" data-aos="fade-up">Our Premium Selection</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="bg-gray-800 rounded-2xl p-6 text-center hover:bg-emerald-900 transition transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="100">
+                    <div class="bg-emerald-900 bg-opacity-30 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4">
+                        <i data-feather="moon" class="w-10 h-10 text-emerald-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Tropical</h3>
+                    <p class="text-gray-400 text-sm">Exotic flavors from paradise</p>
+                </div>
+                <div class="bg-gray-800 rounded-2xl p-6 text-center hover:bg-emerald-900 transition transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="200">
+                    <div class="bg-emerald-900 bg-opacity-30 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4">
+                        <i data-feather="sun" class="w-10 h-10 text-emerald-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Seasonal</h3>
+                    <p class="text-gray-400 text-sm">Fresh picks of the season</p>
+                </div>
+                <div class="bg-gray-800 rounded-2xl p-6 text-center hover:bg-emerald-900 transition transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="300">
+                    <div class="bg-emerald-900 bg-opacity-30 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4">
+                        <i data-feather="star" class="w-10 h-10 text-emerald-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Organic</h3>
+                    <p class="text-gray-400 text-sm">Pure, chemical-free goodness</p>
+                </div>
+                <div class="bg-gray-800 rounded-2xl p-6 text-center hover:bg-emerald-900 transition transform hover:-translate-y-2" data-aos="fade-up" data-aos-delay="400">
+                    <div class="bg-emerald-900 bg-opacity-30 w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-4">
+                        <i data-feather="award" class="w-10 h-10 text-emerald-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-2">Premium</h3>
+                    <p class="text-gray-400 text-sm">The finest quality available</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tropical Fruits Section -->
+    <section id="fruits" class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <h2 class="text-3xl font-bold gradient-text" data-aos="fade-right">Tropical Delights</h2>
+                <div class="mt-4 md:mt-0" data-aos="fade-left">
+                    <select class="bg-gray-800 border border-emerald-700 text-white rounded-full px-4 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <option>Filter by</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Popularity</option>
+                        <option>Newest</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Product Card 1 -->
+                <div class="product-card bg-gray-800 rounded-3xl overflow-hidden transition duration-500 ease-in-out shadow-xl" data-aos="zoom-in">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://img.freepik.com/premium-photo/bowl-grapes-with-black-background_561641-853.jpg"" alt="Dragon Fruit" class="w-full h-full object-cover transform hover:scale-110 transition duration-700">
+                        <div class="absolute top-4 right-4 bg-emerald-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                            NEW
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-semibold">Dragon Fruit</h3>
+                            <span class="text-emerald-400 font-bold">$4.99</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Exotic pink pitaya with refreshing taste</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-1 text-emerald-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                            </div>
+                            <button class="add-to-cart bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-full text-sm transition flex items-center">
+                                <i data-feather="plus" class="w-4 h-4 mr-1"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 2 -->
+                <div class="product-card bg-gray-800 rounded-3xl overflow-hidden transition duration-500 ease-in-out shadow-xl" data-aos="zoom-in" data-aos-delay="100">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRO2XMI5sFQukQi_ZIqnvd9MvpTrPpEveOhwA&s" alt="Mango" class="w-full h-full object-cover transform hover:scale-110 transition duration-700">
+
+                        <div class="absolute top-4 right-4 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                            SALE
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-semibold">Golden Mango</h3>
+                            <div>
+                                <span class="text-gray-400 line-through text-sm mr-2">$6.99</span>
+                                <span class="text-emerald-400 font-bold">$4.99</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Sweet and juicy Alphonso variety</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-1 text-emerald-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4"></i>
+                            </div>
+                            <button class="add-to-cart bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-full text-sm transition flex items-center">
+                                <i data-feather="plus" class="w-4 h-4 mr-1"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product Card 3 -->
+                <div class="product-card bg-gray-800 rounded-3xl overflow-hidden transition duration-500 ease-in-out shadow-xl" data-aos="zoom-in" data-aos-delay="200">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQw5KCoSYLBZlTYeqqgjp_Om9R90irkHd2ekw&s" alt="Pineapple" class="w-full h-full object-cover transform hover:scale-110 transition duration-700" alt="Pineapple" class="w-full h-full object-cover transform hover:scale-110 transition duration-700">
+                    </div>
+                    <div class="p-6">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-semibold">Sweet Pineapple</h3>
+                            <span class="text-emerald-400 font-bold">$3.49</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Hawaiian gold with perfect sweetness</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex space-x-1 text-emerald-400">
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4 fill-current"></i>
+                                <i data-feather="star" class="w-4 h-4"></i>
+                            </div>
+                            <button class="add-to-cart bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-full text-sm transition flex items-center">
+                                <i data-feather="plus" class="w-4 h-4 mr-1"></i> Add
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-20 bg-[#0f1c26]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-3xl font-bold text-green-400 mb-4">Our Fresh Produce</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto">Carefully selected from local farms to ensure the highest quality and freshness</p>
+            </div>
+
+            <!-- Filters -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-10 gap-4" data-aos="fade-up">
+                <div class="flex flex-wrap space-x-2 gap-y-2">
+                    <button class="filter-btn active bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium">All</button>
+                    <button class="filter-btn bg-[#1e293b] hover:bg-green-500 text-gray-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Fruits</button>
+                    <button class="filter-btn bg-[#1e293b] hover:bg-green-500 text-gray-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Vegetables</button>
+                    <button class="filter-btn bg-[#1e293b] hover:bg-green-500 text-gray-300 px-4 py-2 rounded-full text-sm font-medium transition-colors">Organic</button>
+                </div>
+                <div class="relative w-full md:w-64">
+                    <select class="bg-[#1e293b] text-gray-300 border border-green-900/30 rounded-full py-2 px-4 appearance-none focus:outline-none focus:ring-2 focus:ring-green-500 w-full">
+                        <option>Sort by: Featured</option>
+                        <option>Price: Low to High</option>
+                        <option>Price: High to Low</option>
+                        <option>Most Popular</option>
+                    </select>
+                    <i data-feather="chevron-down" class="absolute right-3 top-2.5 text-gray-400 pointer-events-none"></i>
+                </div>
+            </div>
+
+
+
+            <!-- Search + Price Filter (Added) -->
+<div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4" data-aos="fade-up">
+  <input
+    id="search-input"
+    type="text"
+    placeholder="Search products..."
+    class="search-input bg-[#1e293b] text-gray-300 border border-green-900/30 rounded-full py-2 px-5 w-full md:w-1/3 focus:outline-none focus:ring-2 focus:ring-green-500"
+  />
+  <div class="flex items-center space-x-3">
+    <label for="price-range" class="text-gray-300 text-sm">Max Price:</label>
+    <input id="price-range" type="range" min="0" max="5" value="5" class="w-40 accent-green-500" />
+    <span id="price-value" class="text-green-400 font-medium">$5</span>
+  </div>
+</div>
+
+
+            
+            <!-- Product Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                <!-- Product 1 -->
+                <div class="product-card group bg-[#1e293b] rounded-xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-green-500/20" 
+                     data-aos="fade-up" data-aos-delay="100" data-category="fruit">
+                    <div class="relative overflow-hidden h-60">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRZ0xhn1HZjbYxDZW5g-QtBNfW9KZo5ydAuZw&s" alt="Organic Apples" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">Organic</span>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-lg font-semibold text-white mb-1">Organic Apples</h3>
+                            <span class="text-green-400 font-bold">$2.99/kg</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Crisp and sweet, perfect for snacks</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-current"></i>
+                                <span class="text-sm ml-1">4.8 (124)</span>
+                            </div>
+                            <button class="add-to-cart bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card group bg-[#1e293b] rounded-xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-green-500/20" 
+                     data-aos="fade-up" data-aos-delay="200" data-category="vegetable">
+                    <div class="relative overflow-hidden h-60">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ147q6Xk6hq61xWH9IsUOb9MID0hC5Cnd3C_zSRIQRjhdkgi1-Yrn0M4MnXlxpfDKVlo0&usqp=CAU" alt="Fresh Carrots" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-lg font-semibold text-white mb-1">Fresh Carrots</h3>
+                            <span class="text-green-400 font-bold">$1.49/kg</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Crunchy and nutrient-rich</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-current"></i>
+                                <span class="text-sm ml-1">4.6 (89)</span>
+                            </div>
+                            <button class="add-to-cart bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card group bg-[#1e293b] rounded-xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-green-500/20" 
+                     data-aos="fade-up" data-aos-delay="300" data-category="fruit">
+                    <div class="relative overflow-hidden h-60">
+                        <img src="https://i.pinimg.com/736x/5f/c2/d1/5fc2d1a488d3c6f3a00760c0993867bd.jpg" alt="Juicy Oranges" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">Organic</span>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-lg font-semibold text-white mb-1">Juicy Oranges</h3>
+                            <span class="text-green-400 font-bold">$3.49/kg</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Vitamin C packed citrus</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-current"></i>
+                                <span class="text-sm ml-1">4.9 (156)</span>
+                            </div>
+                            <button class="add-to-cart bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                 <!-- Product 4 -->
+                <div class="product-card group bg-[#1e293b] rounded-xl overflow-hidden shadow-lg transition-all duration-500 hover:shadow-green-500/20" 
+                     data-aos="fade-up" data-aos-delay="300" data-category="fruit">
+                    <div class="relative overflow-hidden h-60">
+                        <img src="https://www.foodandwine.com/thmb/lfOAWN5BiVnpviTHo8hqTX3BGck=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/Trendspotting-Gonzo-Fruit-Platters-FT-DI-MAG1123-5d7b3a18d5ff4400ab10e3fe6c970f33.jpg" alt="Juicy Oranges" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500">
+
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                        <span class="absolute top-4 right-4 bg-green-500 text-white text-xs font-bold px-2 py-1 rounded-full">Organic</span>
+                    </div>
+                    <div class="p-5">
+                        <div class="flex justify-between items-start">
+                            <h3 class="text-lg font-semibold text-white mb-1">Mixed Fruit Platter</h3>
+                            <span class="text-green-400 font-bold">$3.49/kg</span>
+                        </div>
+                        <p class="text-gray-400 text-sm mb-4">Assorted seasonal fruits</p>
+                        <div class="flex justify-between items-center">
+                            <div class="flex items-center">
+                                <i data-feather="star" class="w-4 h-4 text-yellow-400 fill-current"></i>
+                                <span class="text-sm ml-1">4.9 (156)</span>
+                            </div>
+                            <button class="add-to-cart bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium transition-colors">
+                                Add to Cart
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <!-- Seasonal Fruits Section -->
+    <section class="py-20 bg-black parallax" style="background-image: url('https://static.vecteezy.com/system/resources/previews/023/029/355/large_2x/various-types-of-fruits-with-aesthetic-arrangement-top-view-photo.jpg')">
+
+    <!-- <section class="py-20 bg-black parallax" style="background-image: url('http://static.photos/season/1200x630/1')"> -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl font-bold gradient-text" data-aos="fade-up">Seasonal Specials</h2>
+                <p class="text-gray-400 max-w-2xl mx-auto mt-4" data-aos="fade-up" data-aos-delay="100">Fresh picks available for a limited time only</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Seasonal Product 1 -->
+                <div class="bg-gray-900 bg-opacity-80 backdrop-blur-sm rounded-2xl p-6 border border-emerald-900 transition hover:border-emerald-600" data-aos="fade-up">
+                    <div class="h-40 mb-4 overflow-hidden rounded-xl">
+                        <img src="https://joyfoodsunshine.com/wp-content/uploads/2022/05/summer-fruit-salad-recipe-1-500x500.jpg" alt="Strawberries" class="w-full h-full object-cover">
+
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">Strawberries</h3>
+                    <p class="text-gray-400 text-sm mb-3">Sweet and juicy California grown</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-emerald-400 font-bold">$5.99</span>
+                        <button class="add-to-cart text-emerald-400 hover:text-emerald-300 transition">
+                            <i data-feather="plus-circle" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Seasonal Product 2 -->
+                <div class="bg-gray-900 bg-opacity-80 backdrop-blur-sm rounded-2xl p-6 border border-emerald-900 transition hover:border-emerald-600" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-40 mb-4 overflow-hidden rounded-xl">
+                        <img src="https://www.herwholesomekitchen.com/wp-content/uploads/2022/06/easy-fruit-salad-1-7.jpg" alt="Cherries" class="w-full h-full object-cover">
+
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">Dark Cherries</h3>
+                    <p class="text-gray-400 text-sm mb-3">Bing cherries at their peak</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-emerald-400 font-bold">$7.49</span>
+                        <button class="add-to-cart text-emerald-400 hover:text-emerald-300 transition">
+                            <i data-feather="plus-circle" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Seasonal Product 3 -->
+                <div class="bg-gray-900 bg-opacity-80 backdrop-blur-sm rounded-2xl p-6 border border-emerald-900 transition hover:border-emerald-600" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-40 mb-4 overflow-hidden rounded-xl">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxFrkdpoU3NCTFZ6okIy7WJjy2ygzzBZNwVrAmxeWTRrtA3VDGqAVzG9yxQa-C8dpwY3U&usqp=CAU" alt="Peaches" class="w-full h-full object-cover">
+
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">White Peaches</h3>
+                    <p class="text-gray-400 text-sm mb-3">Delicate flavor and aroma</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-emerald-400 font-bold">$4.29</span>
+                        <button class="add-to-cart text-emerald-400 hover:text-emerald-300 transition">
+                            <i data-feather="plus-circle" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Seasonal Product 4 -->
+                <div class="bg-gray-900 bg-opacity-80 backdrop-blur-sm rounded-2xl p-6 border border-emerald-900 transition hover:border-emerald-600" data-aos="fade-up" data-aos-delay="300">
+                    <div class="h-40 mb-4 overflow-hidden rounded-xl">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDRFWLnuRtrKcbHd0y5w1cFLSA1bkPcbeEIvutwyz0LaQTC1QDuHGgGgLppoyHH1VK-uY&usqp=CAU" alt="Plums" class="w-full h-full object-cover">
+
+                    </div>
+                    <h3 class="text-lg font-semibold mb-1">Black Plums</h3>
+                    <p class="text-gray-400 text-sm mb-3">Sweet with a hint of tartness</p>
+                    <div class="flex justify-between items-center">
+                        <span class="text-emerald-400 font-bold">$3.99</span>
+                        <button class="add-to-cart text-emerald-400 hover:text-emerald-300 transition">
+                            <i data-feather="plus-circle" class="w-6 h-6"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Organic Fruits Section -->
+    <section class="py-20 bg-gray-900">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-12">
+                <div>
+                    <span class="text-emerald-400 font-medium mb-2 block" data-aos="fade-right">Certified Organic</span>
+                    <h2 class="text-3xl font-bold text-white" data-aos="fade-right" data-aos-delay="100">Pure & Natural</h2>
+                </div>
+                <a href="#" class="mt-4 md:mt-0 text-emerald-400 hover:text-emerald-300 flex items-center transition" data-aos="fade-left">
+                    View all organic <i data-feather="arrow-right" class="w-4 h-4 ml-2"></i>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Organic Product 1 -->
+                <div class="group relative overflow-hidden rounded-3xl" data-aos="fade-up">
+                    <div class="h-96 overflow-hidden">
+                        <img src="https://media.istockphoto.com/id/610771802/photo/forest-fruit-berries-overhead-assorted-mix-in-studio.jpg?s=612x612&w=0&k=20&c=ceEtZtgfRBJUPiNShwHSbGLVKKdHqBKcX_I4HoDTWKQ=" alt="Organic Bananas" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-90"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <div class="bg-emerald-900 bg-opacity-30 backdrop-blur-sm rounded-xl p-4">
+                            <h3 class="text-xl font-bold mb-1">Organic Bananas</h3>
+                            <p class="text-gray-300 text-sm mb-3">Fair trade, pesticide-free</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-emerald-300 font-bold">$2.49</span>
+                                <button class="add-to-cart bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-full text-sm transition flex items-center">
+                                    <i data-feather="shopping-bag" class="w-4 h-4 mr-1"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute top-4 left-4 bg-green-800 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        ORGANIC
+                    </div>
+                </div>
+                
+                <!-- Organic Product 2 -->
+                <div class="group relative overflow-hidden rounded-3xl" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-96 overflow-hidden">
+                        <img src="https://img.freepik.com/photos-premium/fond-fruits-rouges_257123-13804.jpg" alt="Organic Blueberries" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-90"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <div class="bg-emerald-900 bg-opacity-30 backdrop-blur-sm rounded-xl p-4">
+                            <h3 class="text-xl font-bold mb-1">Organic Blueberries</h3>
+                            <p class="text-gray-300 text-sm mb-3">Antioxidant-rich superfood</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-emerald-300 font-bold">$6.99</span>
+                                <button class="add-to-cart bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-full text-sm transition flex items-center">
+                                    <i data-feather="shopping-bag" class="w-4 h-4 mr-1"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute top-4 left-4 bg-green-800 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        ORGANIC
+                    </div>
+                </div>
+                
+                <!-- Organic Product 3 -->
+                <div class="group relative overflow-hidden rounded-3xl" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-96 overflow-hidden">
+                        <img src="https://as1.ftcdn.net/jpg/00/88/60/18/220_F_88601835_pYnNGlHPdQ3rpRP7Dkvzub74O2jZZFYF.jpg" alt="Organic Avocados" class="w-full h-full object-cover transform group-hover:scale-105 transition duration-700">
+
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-90"></div>
+                    <div class="absolute bottom-0 left-0 right-0 p-6">
+                        <div class="bg-emerald-900 bg-opacity-30 backdrop-blur-sm rounded-xl p-4">
+                            <h3 class="text-xl font-bold mb-1">Organic Avocados</h3>
+                            <p class="text-gray-300 text-sm mb-3">Creamy Hass variety</p>
+                            <div class="flex justify-between items-center">
+                                <span class="text-emerald-300 font-bold">$3.49</span>
+                                <button class="add-to-cart bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1 rounded-full text-sm transition flex items-center">
+                                    <i data-feather="shopping-bag" class="w-4 h-4 mr-1"></i> Add
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="absolute top-4 left-4 bg-green-800 text-white text-xs font-bold px-2 py-1 rounded-full">
+                        ORGANIC
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-[#0a1922]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="relative" data-aos="fade-right">
+                    <div class="relative rounded-2xl overflow-hidden h-96">
+                        <img src="LOGO.png" alt="Farm Fresh" class="w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-r from-green-500/20 to-transparent"></div>
+                    </div>
+                    <div class="absolute -bottom-6 -left-6 bg-[#1e293b] p-6 rounded-2xl shadow-xl w-3/4 z-10">
+                        <h3 class="text-xl font-bold text-green-400 mb-2">Since 2020</h3>
+                        <p class="text-gray-300 text-sm">Delivering farm-fresh produce with love</p>
+                    </div>
+                </div>
+                <div data-aos="fade-left">
+                    <h2 class="text-3xl font-bold text-green-400 mb-6">Our Story</h2>
+                    <p class="text-gray-400 mb-6">
+                        Hami was born from a passion for bringing the freshest, most nutritious fruits and vegetables directly from local farms to your table. We believe in sustainable farming practices and building relationships with farmers who share our commitment to quality.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-green-500/20 p-2 rounded-lg mr-4">
+                                <i data-feather="check-circle" class="text-green-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-medium text-white mb-1">100% Organic</h4>
+                                <p class="text-gray-400 text-sm">No synthetic pesticides or fertilizers</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-green-500/20 p-2 rounded-lg mr-4">
+                                <i data-feather="truck" class="text-green-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-medium text-white mb-1">Fast Delivery</h4>
+                                <p class="text-gray-400 text-sm">Next-day delivery for maximum freshness</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-green-500/20 p-2 rounded-lg mr-4">
+                                <i data-feather="heart" class="text-green-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-medium text-white mb-1">Quality Guarantee</h4>
+                                <p class="text-gray-400 text-sm">If you're not satisfied, we'll make it right</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+    
+
+    <!-- Newsletter -->
+    <section class="py-20 bg-[#0a1922]">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" data-aos="fade-up">
+            <div class="bg-[#1e293b] rounded-2xl p-8 md:p-12 shadow-xl">
+                <h2 class="text-3xl font-bold text-green-400 mb-4">Join Our Newsletter</h2>
+                <p class="text-gray-400 mb-8 max-w-2xl mx-auto">
+                    Stay updated with our seasonal offerings, exclusive deals, and healthy eating tips.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto">
+                    <input type="email" placeholder="Your email address" class="flex-grow bg-[#0a1922] border border-green-900/30 rounded-full py-3 px-6 focus:outline-none focus:ring-2 focus:ring-green-500 text-white">
+                    <button class="bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-8 rounded-full transition-all duration-300 transform hover:scale-105">
+                        Subscribe
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 bg-[#0f1c26]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div data-aos="fade-right">
+                    <h2 class="text-3xl font-bold text-green-400 mb-6">Get In Touch</h2>
+                    <p class="text-gray-400 mb-8">
+                        Have questions about our products or delivery? We're here to help!
+                    </p>
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="bg-green-500/20 p-3 rounded-lg mr-4">
+                                <i data-feather="mail" class="text-green-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-medium text-white mb-1">Email Us</h4>
+                                <p class="text-gray-400 text-sm">hello@hami.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-green-500/20 p-3 rounded-lg mr-4">
+                                <i data-feather="phone" class="text-green-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-medium text-white mb-1">Call Us</h4>
+                                <p class="text-gray-400 text-sm">+252 63 6687869</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-green-500/20 p-3 rounded-lg mr-4">
+                                <i data-feather="map-pin" class="text-green-400"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-lg font-medium text-white mb-1">Visit Us</h4>
+                                <p class="text-gray-400 text-sm">Hami Fruits</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div data-aos="fade-left">
+                    <form class="bg-[#1e293b] p-8 rounded-xl">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Name</label>
+                                <input type="text" id="name" class="w-full bg-[#0a1922] border border-green-900/30 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-green-500 text-white">
+                            </div>
+                            <div>
+                                <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email</label>
+                                <input type="email" id="email" class="w-full bg-[#0a1922] border border-green-900/30 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-green-500 text-white">
+                            </div>
+                        </div>
+                        <div class="mb-6">
+                            <label for="subject" class="block text-sm font-medium text-gray-300 mb-2">Subject</label>
+                            <input type="text" id="subject" class="w-full bg-[#0a1922] border border-green-900/30 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-green-500 text-white">
+                        </div>
+                        <div class="mb-6">
+                            <label for="message" class="block text-sm font-medium text-gray-300 mb-2">Message</label>
+                            <textarea id="message" rows="5" class="w-full bg-[#0a1922] border border-green-900/30 rounded-lg py-3 px-4 focus:outline-none focus:ring-2 focus:ring-green-500 text-white"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-[1.02]">
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-[#0a1922] border-t border-green-900/30 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-bold text-green-400 mb-4">HAMI</h3>
+                    <p class="text-gray-400 text-sm">
+                        HAMI SKILLS TASK 1
+                    </p>
+                    <div class="flex space-x-4 mt-6">
+                        <a href="#" class="text-gray-400 hover:text-green-400 transition-colors">
+                            <i data-feather="facebook"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-green-400 transition-colors">
+                            <i data-feather="instagram"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-green-400 transition-colors">
+                            <i data-feather="twitter"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-green-400 transition-colors">
+                            <i data-feather="youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Shop</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">All Products</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Fruits</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Vegetables</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Organic</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Seasonal</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Company</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">About Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Our Farms</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Sustainability</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Careers</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Press</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-sm font-semibold text-white uppercase tracking-wider mb-4">Help</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">FAQs</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Shipping</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Returns</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-green-400 text-sm transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+           
+        </div>
+    </footer>
+
+    <!-- Shopping Cart Sidebar -->
+    <div id="cart-sidebar" class="fixed top-0 right-0 h-full w-full md:w-96 bg-[#0f1c26] shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 overflow-y-auto">
+        <div class="p-6">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-green-400">Your Cart</h3>
+                <button id="close-cart" class="text-gray-400 hover:text-white">
+                    <i data-feather="x"></i>
+                </button>
+            </div>
+            
+            <div id="cart-items" class="space-y-4 mb-6">
+                <!-- Cart items will be dynamically inserted here -->
+                <div class="text-center py-12 text-gray-400" id="empty-cart-message">
+                    <i data-feather="shopping-cart" class="w-12 h-12 mx-auto mb-4"></i>
+                    <p>Your cart is empty</p>
+                </div>
+            </div>
+            
+            <div class="border-t border-green-900/30 pt-4 mb-6">
+                <div class="flex justify-between mb-2">
+                    <span class="text-gray-400">Subtotal</span>
+                    <span id="cart-subtotal" class="font-medium">$0.00</span>
+                </div>
+                <div class="flex justify-between mb-4">
+                    <span class="text-gray-400">Shipping</span>
+                    <span class="font-medium">Free</span>
+                </div>
+                <div class="flex justify-between text-lg">
+                    <span class="text-white">Total</span>
+                    <span id="cart-total" class="font-bold text-green-400">$0.00</span>
+                </div>
+            </div>
+            
+            <button id="checkout-btn" class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-300">
+                Checkout
+            </button>
+        </div>
+    </div>
+    <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+    <!-- Scripts -->
+   <script src="app.js"></script>
+</body>
+</html>
