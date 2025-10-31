@@ -197,3 +197,62 @@
                 button.classList.remove('bg-[#1e293b]');
             });
         });
+
+        // === Search + Price Filter for "Our Fresh Produce" section ===
+const searchInput = document.getElementById('search-input');
+const priceRange = document.getElementById('price-range');
+const priceValue = document.getElementById('price-value');
+const productCards = document.querySelectorAll('#products .product-card');
+
+let activeCategory = 'all';
+
+// Update price label as user slides
+if (priceRange && priceValue) {
+  priceRange.addEventListener('input', () => {
+    priceValue.textContent = `$${priceRange.value}`;
+    applyFilters();
+  });
+}
+
+// Capture filter button category (already styled)
+document.querySelectorAll('#products .filter-btn').forEach(button => {
+  button.addEventListener('click', () => {
+    document.querySelectorAll('#products .filter-btn').forEach(btn => {
+      btn.classList.remove('active', 'bg-green-500', 'text-white');
+      btn.classList.add('bg-[#1e293b]', 'text-gray-300');
+    });
+    button.classList.add('active', 'bg-green-500', 'text-white');
+    activeCategory = button.textContent.toLowerCase();
+    applyFilters();
+  });
+});
+
+// Search as user types
+if (searchInput) {
+  searchInput.addEventListener('input', applyFilters);
+}
+
+// Apply all filters
+function applyFilters() {
+  const searchText = searchInput?.value.toLowerCase() || '';
+  const maxPrice = parseFloat(priceRange?.value || 5);
+
+  productCards.forEach(card => {
+    const name = card.querySelector('h3').textContent.toLowerCase();
+    const category = card.dataset.category?.toLowerCase() || '';
+    const priceText = card.querySelector('.text-green-400.font-bold')?.textContent || '$0';
+    const price = parseFloat(priceText.replace(/[^0-9.]/g, '')) || 0;
+
+    const matchesSearch = name.includes(searchText);
+    const matchesCategory =
+      activeCategory === 'all' ||
+      category.includes(activeCategory);
+    const matchesPrice = price <= maxPrice;
+
+    if (matchesSearch && matchesCategory && matchesPrice) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
