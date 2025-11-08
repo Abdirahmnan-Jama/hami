@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Hami | Order Summary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-[#0a1922] text-gray-200">
+  <div class="max-w-3xl mx-auto p-6">
+    <header class="flex items-center justify-between mb-8">
+      <a href="index.html" class="text-green-400 hover:underline">&larr; Continue shopping</a>
+      <h1 class="text-2xl font-bold text-green-400">Order Summary</h1>
+      <span></span>
+    </header>
+
+    <div id="summary" class="bg-[#0f1c26] rounded-xl p-6 shadow-lg">
+      <div id="items" class="space-y-4 mb-6"></div>
+
+      <div class="border-t border-green-900/30 pt-4 space-y-2">
+        <div class="flex justify-between text-sm text-gray-300">
+          <span>Subtotal</span> <span id="subtotal">$0.00</span>
+        </div>
+        <div class="flex justify-between text-sm text-gray-300">
+          <span>Tax (5%)</span> <span id="tax">$0.00</span>
+        </div>
+        <div class="flex justify-between text-lg">
+          <span class="text-white">Total</span> <span id="total" class="font-bold text-green-400">$0.00</span>
+        </div>
+      </div>
+
+      <button id="confirm" class="mt-6 w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3 px-6 rounded-lg">
+        Confirm Order
+      </button>
+    </div>
+  </div>
+
+  <script type="module">
+    import { loadCart, clearCart } from "./storage.js";
+
+    const items = loadCart();
+    const list = document.getElementById("items");
+    const subEl = document.getElementById("subtotal");
+    const taxEl = document.getElementById("tax");
+    const totalEl = document.getElementById("total");
+    const TAX_RATE = 0.05;
+
+    if (items.length === 0) {
+      list.innerHTML = '<p class="text-gray-400">Your cart is empty.</p>';
+    } else {
+      let subtotal = 0;
+      items.forEach(i => {
+        const li = document.createElement("div");
+        li.className = "flex items-center justify-between bg-[#1e293b] p-4 rounded-lg";
+        li.innerHTML = `
+          <div>
+            <h4 class="font-medium text-white">${i.name}</h4>
+            <p class="text-gray-400 text-sm">$${i.price.toFixed(2)} × ${i.qty}</p>
+          </div>
+          <div class="font-medium text-green-400">$${(i.price * i.qty).toFixed(2)}</div>
+        `;
+        list.appendChild(li);
+        subtotal += i.price * i.qty;
+      });
+
+      const tax = subtotal * TAX_RATE;
+      const total = subtotal + tax;
+      subEl.textContent = `$${subtotal.toFixed(2)}`;
+      taxEl.textContent = `$${tax.toFixed(2)}`;
+      totalEl.textContent = `$${total.toFixed(2)}`;
+    }
+
+    // Fake confirmation (no backend yet)
+    document.getElementById("confirm").addEventListener("click", () => {
+      if (!items.length) {
+        alert("Your cart is empty.");
+        return;
+      }
+      alert("Order confirmed! (demo)");
+      clearCart();
+      window.location.href = "index.html";
+    });
+  </script>
+</body>
+</html>
