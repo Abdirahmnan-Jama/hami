@@ -3,7 +3,7 @@
 // For now this file is a small facade so your main stays clean.
 
 import { bindAddToCartButtons } from "./cart.js";
-import products from "./json-storagee.js";
+import products from "./json-storage.js";
 
 function formatPrice(p) {
   return `$${p.toFixed(2)}`;
