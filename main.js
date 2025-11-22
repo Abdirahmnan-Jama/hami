@@ -1,6 +1,6 @@
 // main.js
 import { initCartUI } from "./cart.js";
-import { initProducts } from "./product.js";
+import { initProducts } from "./products.js";
 
 window.addEventListener("DOMContentLoaded", () => {
   // AOS, Vanta, Feather are already loaded via <script> tags in your HTML.
